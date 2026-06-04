@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Reservation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- TESTER NOTE: Navigation bar with branding and user info -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <a href="{% url 'index' %}" style="text-decoration: none;"><h1>🏢 Room Reservation</h1></a>
+            </div>
+            <div class="navbar-links">
+                <a href="{% url 'index' %}" class="nav-link active">Home</a>
+                <a href="#roomsGrid" class="nav-link">Bookings</a>
+                <a href="{% url 'about' %}" class="nav-link">About Us</a>
+                {% if user.is_staff or user.is_superuser %}
+                    <a href="/admin/" class="nav-link admin-link" target="_blank">Admin Panel</a>
+                {% endif %}
+            </div>
+            <div class="navbar-user">
+                {% if user.is_authenticated %}
+                    <span class="user-greeting">Welcome, {{ user.username }}!</span>
+                    <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn-login">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- TESTER NOTE: Main content area with hero section -->
+    <div class="hero-section">
+        <h2>Find and Book Your Perfect Meeting Room</h2>
+        <p>Browse available rooms and reserve them for your team meetings</p>
+    </div>
+
+    <!-- TESTER NOTE: Rooms grid container - test responsiveness on mobile/tablet -->
+    <div class="container">
+        <div class="rooms-grid" id="roomsGrid">
+            {% for room in rooms %}
+                <!-- TESTER NOTE: Each room card is interactive and clickable -->
+                <div class="room-card" data-room-id="{{ room.id }}">
+                    <div class="room-image">
+                        {% if room.image_url %}
+                            <img src="{{ room.image_url }}" alt="{{ room.name }}">
+                        {% else %}
+                            <div class="room-placeholder">📍</div>
+                        {% endif %}
+                    </div>
+                    <div class="room-info">
+                        <h3>{{ room.name }}</h3>
+                        <p class="room-capacity">👥 Capacity: {{ room.capacity }} people</p>
+                        <p class="room-description">{{ room.description }}</p>
+                        <button class="btn-book" onclick="openBookingModal({{ room.id }}, '{{ room.name }}')">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+            {% empty %}
+                <!-- TESTER NOTE: Empty state when no rooms are available -->
+                <div class="empty-state">
+                    <p>No rooms available at the moment.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- TESTER NOTE: Modal for booking - appears when "Book Now" is clicked -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeBookingModal()">&times;</span>
+            <h2 id="modalRoomName">Book Room</h2>
+            
+            {% if user.is_authenticated %}
+                <!-- TESTER NOTE: Form for authenticated users - validate date/time inputs -->
+                <form id="bookingForm" method="POST" action="/book/">
+                    {% csrf_token %}
+                    <input type="hidden" id="roomId" name="room_id">
+                    
+                    <div class="form-group">
+                        <label for="startTime">Start Time:</label>
+                        <input type="datetime-local" id="startTime" name="start_time" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endTime">End Time:</label>
+                        <input type="datetime-local" id="endTime" name="end_time" required>
+                    </div>
+                    
+                    <!-- TESTER NOTE: Booking status messages displayed here -->
+                    <div id="bookingMessage" class="message"></div>
+                    
+                    <button type="submit" class="btn-submit">Confirm Booking</button>
+                </form>
+            {% else %}
+                <!-- TESTER NOTE: Redirect message for unauthenticated users -->
+                <div class="auth-message">
+                    <p>You need to be logged in to book a room.</p>
+                    <a href="{% url 'login' %}" class="btn-login-modal">Login Here</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- TESTER NOTE: Bookings list section - shows existing reservations -->
+    <div class="container bookings-section">
+        <h2>Recent Bookings</h2>
+        <div id="bookingsList" class="bookings-list">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">🏢 Room Reservation</div>
+            <div class="footer-links">
+                <a href="{% url 'index' %}" class="footer-link">Home</a>
+                <a href="{% url 'about' %}" class="footer-link">About Us</a>
+                <a href="/admin/" class="footer-link">Admin</a>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2024 Room Reservation System. All rights reserved. <br>
+                <small style="opacity: 0.7;">Crafted for intelligent workspace management.</small>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

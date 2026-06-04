@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Room Reservation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- TESTER NOTE: Reusing the same navbar logic -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <a href="{% url 'index' %}" style="text-decoration: none;"><h1>🏢 Room Reservation</h1></a>
+            </div>
+            <div class="navbar-links">
+                <a href="{% url 'index' %}" class="nav-link">Home</a>
+                <a href="{% url 'index' %}#roomsGrid" class="nav-link">Bookings</a>
+                <a href="{% url 'about' %}" class="nav-link active">About Us</a>
+                {% if user.is_staff or user.is_superuser %}
+                    <a href="/admin/" class="nav-link admin-link" target="_blank">Admin Panel</a>
+                {% endif %}
+            </div>
+            <div class="navbar-user">
+                {% if user.is_authenticated %}
+                    <span class="user-greeting">Welcome, {{ user.username }}!</span>
+                    <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn-login">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-section">
+        <h2>About Our Mission</h2>
+        <p>Providing the most seamless and intelligent way to manage your workspace and team meetings.</p>
+    </div>
+
+    <div class="container" style="margin-bottom: 5rem;">
+        <div style="background: white; padding: 3rem; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-md);">
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Who We Are</h3>
+            <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem; line-height: 1.8;">
+                The Room Reservation System was born out of a need for simplicity in the modern workplace. We believe that finding a place to collaborate should be the easiest part of your day. Our platform uses intelligent scheduling to ensure that your team always has the space they need, when they need it.
+            </p>
+            
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Why Choose Us</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border);">
+                    <h4 style="margin-bottom: 0.75rem; color: var(--primary);">Real-time Booking</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Instantly reserve rooms and see updates in real-time without refreshing the page.</p>
+                </div>
+                <div style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border);">
+                    <h4 style="margin-bottom: 0.75rem; color: var(--primary);">Conflict Prevention</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Our intelligent backend ensures that no two meetings ever overlap in the same space.</p>
+                </div>
+                <div style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border);">
+                    <h4 style="margin-bottom: 0.75rem; color: var(--primary);">Modern Interface</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">A clean, intuitive, and responsive design that works perfectly on all your devices.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">🏢 Room Reservation</div>
+            <div class="footer-links">
+                <a href="{% url 'index' %}" class="footer-link">Home</a>
+                <a href="{% url 'about' %}" class="footer-link">About Us</a>
+                <a href="/admin/" class="footer-link">Admin</a>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2024 Room Reservation System. All rights reserved. <br>
+                <small style="opacity: 0.7;">Crafted for intelligent workspace management.</small>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
